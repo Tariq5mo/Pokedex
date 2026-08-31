@@ -1,9 +1,9 @@
 import { State } from "./state.js";
 
-export function startREPL(state: State) {
+export async function startREPL(state: State) {
 	const rl = state.readline
 	rl.prompt();
-	rl.on("line", (input) => {
+	rl.on("line", async (input) => {
 		const args = cleanInput(input);
 		if (args.length < 1) {
 			rl.prompt()
@@ -13,7 +13,8 @@ export function startREPL(state: State) {
 		const commands = state.commands
 		if (commands[userCommand]) {
 			try {
-				commands[userCommand].callback(state)
+				console.log(userCommand);
+				await commands[userCommand].callback(state)
 			} catch (err) {
 				if (err instanceof Error) console.log(err);
 			}
