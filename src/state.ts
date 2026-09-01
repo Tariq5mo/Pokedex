@@ -1,11 +1,12 @@
 import { createInterface, type Interface } from "readline";
-import { cleanInput } from "./repl.js";
 import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
-import { PokeAPI } from "./pokeapi.js";
+import { DeepPokemon, PokeAPI } from "./pokeapi.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
+import { commandCatch } from "./command_catch.js";
+import { commandInspect } from "./command_inspect.js";
 
 export type CLICommand = {
 	name: string;
@@ -19,13 +20,16 @@ export type State = {
 	PokeAPIObject: PokeAPI,
 	nextLocationsURL: string | null,
 	prevLocationsURL: string | null,
+	userPokedex: Record<string, DeepPokemon>,
 }
 
 export function initState(): State {
 	const rl = createInterface({ input: process.stdin, output: process.stdout, prompt: "Pokedex > " })
 	const pokeAPIObject = new PokeAPI()
+	const userPokedex: Record<string, DeepPokemon> = {}
 	return {
 		readline: rl,
+		userPokedex: userPokedex,
 		commands: {
 			exit: {
 				name: "exit",
@@ -48,9 +52,19 @@ export function initState(): State {
 				callback: commandMapb,
 			},
 			explore: {
-				name: "explore",
+				name: "explore <name>",
 				description: "Displays a list of all the Pokémon in a given area.",
 				callback: commandExplore,
+			},
+			catch: {
+				name: "catch <name>",
+				description: "Catching Pokemon adds them to the user's Pokedex.",
+				callback: commandCatch,
+			},
+			inspect: {
+				name: "inspect <name>",
+				description: "Inspect a Pokemon",
+				callback: commandInspect,
 			},
 		},
 		PokeAPIObject: pokeAPIObject,
