@@ -14,6 +14,7 @@ export class PokeAPI {
 		let entiry = this.cacheService.get(url)
 		if (!entiry) {
 			const response = await fetch(url);
+			if (!response.ok) throw new Error("Not found");
 			const data: ShallowLocations = await response.json();
 			this.cacheService.add(url, data)
 			return data;
@@ -23,8 +24,17 @@ export class PokeAPI {
 	}
 
 	async fetchLocation(locationName: string): Promise<DeepLocation> {
-		const response = await fetch(PokeAPI.baseURL + "/location-area/" + locationName)
-		return response.json()
+		const url = PokeAPI.baseURL + "/location-area/" + locationName
+		let entiry = this.cacheService.get(url)
+		if (!entiry) {
+			const response = await fetch(url);
+			if (!response.ok) throw new Error("Not found");
+			const data: DeepLocation = await response.json();
+			this.cacheService.add(url, data)
+			return data;
+		}
+		console.log("CACHE USED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		return entiry as DeepLocation
 	}
 }
 
