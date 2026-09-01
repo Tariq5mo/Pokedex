@@ -1,4 +1,4 @@
-import { DeepLocation, ShallowLocations } from "./pokeapi.js";
+import { DeepLocation, DeepPokemon, ShallowLocations } from "./pokeapi.js";
 
 export type CacheEntry<T> = {
 	createdAt: number,
@@ -23,7 +23,7 @@ export class Cache {
 		return this.#cache.set(key, value)
 	}
 
-	get<T>(key: string): DeepLocation| ShallowLocations | undefined {
+	get<T>(key: string): DeepLocation| ShallowLocations | DeepPokemon | undefined {
 		const entiry = this.#cache.get(key)
 		return entiry?.val
 	}
