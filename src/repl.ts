@@ -9,14 +9,13 @@ export async function startREPL(state: State) {
 			rl.prompt()
 			return;
 		}
-		const userCommand = args[0];
+		const [userCommand, ...restArgs] = args;
 		const commands = state.commands
 		if (commands[userCommand]) {
 			try {
-				console.log(userCommand);
-				await commands[userCommand].callback(state)
+				await commands[userCommand].callback(state, ...restArgs)
 			} catch (err) {
-				if (err instanceof Error) console.log(err);
+				if (err instanceof Error) console.log(err.message);
 			}
 		} else {
 			console.log("Unknown command");
